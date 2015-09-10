@@ -324,7 +324,7 @@ if __name__ == '__main__':
     opts, args = getopt.getopt(sys.argv[1:], "d:c")
   except getopt.GetoptError as err:
     print str(err)
-    print " -d=/device/path "
+    print " -d/device/path "
     print "  c              Clear existing barcodes"
     
   do_clear = False
