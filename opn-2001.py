@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # Copyright (c) 2006-2007, Fazal Majid. All rights reserved
 # This code is hereby placed in the public domain
-import sys, time, datetime, serial, struct, pprint
+import sys, time, datetime, serial, struct, pprint, getopt
 
 if sys.platform == 'darwin':
   serial_port = '/dev/cu.usbserial'
@@ -130,7 +130,7 @@ class CS1504:
         self.ser = serial.Serial(port,
                                  baudrate=9600,
                                  bytesize=8,
-                                 parity=serial.PARITY_ODD,
+                                 parity=serial.PARITY_NONE, # PARITY_NONE for OPN-2001, PARITY_ODD for cs1504
                                  stopbits=serial.STOPBITS_ONE,
                                  timeout=2)
         connected = True
@@ -196,6 +196,7 @@ class CS1504:
     data = self.recv(12)
     assert data[2] == '\x06'
     s, mi, h, d, m, y = map(ord, data[3:9])
+    print "Time: ",s, mi, h, d, m, y
     y += 2000
     ts = datetime.datetime(y, m, d, h, mi, s)
     # determine the clock drift so we can correct timestamps
@@ -319,13 +320,37 @@ assert crc16('\x01\x02\x00') == '\x9f\xde', \
        map(hex, map(ord, crc16('\x01\x02\x00')))
 
 if __name__ == '__main__':
+  try:
+    opts, args = getopt.getopt(sys.argv[1:], "d:c")
+  except getopt.GetoptError as err:
+    print str(err)
+    print " -d=/device/path "
+    print "  c              Clear existing barcodes"
+    
+  do_clear = False
+  
+  for o, a in opts:
+    if o == '-c':
+      do_clear = True
+    if o == '-d':
+      serial_port = a
+      
+      
   scanner = CS1504(serial_port)
   scanner.interrogate()
-  scanner.get_time()
-  scanner.set_time()
+  
+  # Kludge - Not proud of this. 
+  # OPN-2001 date format on existing scanners throws an error until it has been set
+  # TODO Debug the output
+  try:
+    scanner.get_time()
+  except (ValueError, IndexError):
+      print "Couldn't understand current time"
+  # scanner.set_time()
+  
   barcodes = scanner.get_barcodes()
   for symbology, code, timestamp in barcodes:
     print '%s,%s,%s' % (symbology, code, str(timestamp).split('.')[0])
-  if barcodes:
+  if barcodes and do_clear:
     scanner.clear_barcodes()
   scanner.power_down()
