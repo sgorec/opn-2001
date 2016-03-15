@@ -258,6 +258,9 @@ class CS1504:
       A1719732,P0001,05.03.2016 09:20:38
       A2127984,P0002,05.03.2016 09:20:45
       '''
+
+      print >> sys.stderr, 'done (%d read)' % len(self.last_barcodes)
+
       assert len(self.last_barcodes) % 2 == 0
       last_barcodes = self.last_barcodes[:]
       last_barcodes.reverse()
@@ -271,7 +274,7 @@ class CS1504:
         self.last_barcodes.append(tuple(first_row))
       # FISISH Denis's govnokod :)  
 
-    print >> sys.stderr, 'done (%d read)' % len(self.last_barcodes)
+    print >> sys.stderr, 'done (created %d barcodes)' % len(self.last_barcodes)
     return self.last_barcodes
 
   def clear_barcodes(self):
