@@ -244,7 +244,7 @@ class CS1504:
       s = int(t & 0x3f)
       ts = datetime.datetime(y, m, d, h, mi, s) + self.delta
       symbology, code = expand(symbology, code)
-      self.last_barcodes.append((symbology, code, ts.strftime('%d.%m.%Y %H:%M:%S')))
+      self.last_barcodes.append((symbology, code, ts))
 
     # START Denis's govnokod :)
     '''
@@ -272,7 +272,7 @@ class CS1504:
       print >> sys.stderr, 'Second row: %s,%s,%s' % tuple(second_row)
       first_row[0] = first_row[1]
       first_row[1] = second_row[1]
-      first_row[2] = second_row[2]
+      first_row[2] = second_row[2].strftime('%d.%m.%Y %H:%M:%S')
       self.last_barcodes.append(tuple(first_row))
       break
     # FISISH Denis's govnokod :)  
@@ -382,7 +382,7 @@ if __name__ == '__main__':
   
   barcodes = scanner.get_barcodes()
   for symbology, code, timestamp in barcodes:
-    print '%s,%s,%s' % (symbology, code, str(timestamp).split('.')[0])
+    print '%s,%s,%s' % (symbology, code, str(timestamp))
   if barcodes and do_clear:
     scanner.clear_barcodes()
   scanner.power_down()
