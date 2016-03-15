@@ -196,7 +196,6 @@ class CS1504:
     data = self.recv(12)
     assert data[2] == '\x06'
     s, mi, h, d, m, y = map(ord, data[3:9])
-    print "Time: ",s, mi, h, d, m, y
     y += 2000
     ts = datetime.datetime(y, m, d, h, mi, s)
     # determine the clock drift so we can correct timestamps
