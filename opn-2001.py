@@ -246,33 +246,33 @@ class CS1504:
       symbology, code = expand(symbology, code)
       self.last_barcodes.append((symbology, code, ts))
 
-      # START Denis's govnokod :)
-      '''
-      Transform this:
-      Code 128,A1719732,2016-03-05 09:19:52
-      Code 128,P0001,2016-03-05 09:19:55
-      Code 128,A2127984,2016-03-05 09:19:59
-      Code 128,P0002,2016-03-05 09:20:02
+    # START Denis's govnokod :)
+    '''
+    Transform this:
+    Code 128,A1719732,2016-03-05 09:19:52
+    Code 128,P0001,2016-03-05 09:19:55
+    Code 128,A2127984,2016-03-05 09:19:59
+    Code 128,P0002,2016-03-05 09:20:02
 
-      To this:
-      A1719732,P0001,05.03.2016 09:20:38
-      A2127984,P0002,05.03.2016 09:20:45
-      '''
+    To this:
+    A1719732,P0001,05.03.2016 09:20:38
+    A2127984,P0002,05.03.2016 09:20:45
+    '''
 
-      print >> sys.stderr, 'done (%d read)' % len(self.last_barcodes)
+    print >> sys.stderr, 'done (%d read)' % len(self.last_barcodes)
 
-      assert len(self.last_barcodes) % 2 == 0
-      last_barcodes = self.last_barcodes[:]
-      last_barcodes.reverse()
-      del self.last_barcodes[:]
-      while len(last_barcodes) > 0:
-        second_row = list(last_barcodes.pop())
-        first_row = list(last_barcodes.pop())
-        first_row[0] = first_row[1]
-        first_row[1] = second_row[1]
-        first_row[2] = second_row[2].strftime('%d.%m.%Y %H:%M:%S')
-        self.last_barcodes.append(tuple(first_row))
-      # FISISH Denis's govnokod :)  
+    assert len(self.last_barcodes) % 2 == 0
+    last_barcodes = self.last_barcodes[:]
+    last_barcodes.reverse()
+    del self.last_barcodes[:]
+    while len(last_barcodes) > 0:
+      second_row = list(last_barcodes.pop())
+      first_row = list(last_barcodes.pop())
+      first_row[0] = first_row[1]
+      first_row[1] = second_row[1]
+      first_row[2] = second_row[2].strftime('%d.%m.%Y %H:%M:%S')
+      self.last_barcodes.append(tuple(first_row))
+    # FISISH Denis's govnokod :)  
 
     print >> sys.stderr, 'done (created %d barcodes)' % len(self.last_barcodes)
     return self.last_barcodes
