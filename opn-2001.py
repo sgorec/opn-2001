@@ -268,13 +268,10 @@ class CS1504:
     while len(last_barcodes) > 0:
       first_row = list(last_barcodes.pop())
       second_row = list(last_barcodes.pop())
-      print >> sys.stderr, 'First row: %s,%s,%s' % tuple(first_row)
-      print >> sys.stderr, 'Second row: %s,%s,%s' % tuple(second_row)
       first_row[0] = first_row[1]
       first_row[1] = second_row[1]
       first_row[2] = second_row[2].strftime('%d.%m.%Y %H:%M:%S')
       self.last_barcodes.append(tuple(first_row))
-      break
     # FISISH Denis's govnokod :)  
 
     print >> sys.stderr, 'done (created %d barcodes)' % len(self.last_barcodes)
